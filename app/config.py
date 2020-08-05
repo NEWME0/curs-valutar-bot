@@ -1,0 +1,18 @@
+import os
+import dotenv
+
+
+dotenv.load_dotenv()
+
+
+CURS_VALUTAR_BOT_TOKEN = os.getenv('CURS_VALUTAR_BOT_TOKEN')
+
+CURS_VALUTAR_BOT_WEBHOOK_HOST = os.getenv('CURS_VALUTAR_BOT_WEBHOOK_HOST')
+CURS_VALUTAR_BOT_WEBHOOK_PORT = os.getenv('CURS_VALUTAR_BOT_WEBHOOK_PORT')
+CURS_VALUTAR_BOT_WEBHOOK_PATH = os.getenv('CURS_VALUTAR_BOT_WEBHOOK_PATH')
+CURS_VALUTAR_BOT_WEBHOOK_URL = os.getenv('CURS_VALUTAR_BOT_WEBHOOK_URL')
+
+
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(APP_ROOT)
+IMAGES_ROOT = os.path.join(PROJECT_ROOT, 'static/img')

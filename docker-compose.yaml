@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    env_file:
+      - .env
+    build: .
+    restart: always
+    environment:
+      TZ: "Europe/Istanbul"
+    command: python -m app.main
+    networks:
+      docker_network_curs_valutar_bot:
+        ipv4_address: 172.22.1.10
+    volumes:
+      - .:/usr/app/
+    ports:
+      - 5010:5010
+
+networks:
+  docker_network_curs_valutar_bot:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.0.0/16
