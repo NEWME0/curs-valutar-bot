@@ -81,7 +81,7 @@ def cb_cancel(update: Update, context):
     return END
 
 
-coin_evolution = ConversationHandler(
+best_buy = ConversationHandler(
     entry_points=[
         CommandHandler('best_buy', cb_best_buy),
     ],
@@ -97,5 +97,5 @@ coin_evolution = ConversationHandler(
 )
 
 handlers = [
-    coin_evolution,
+    best_buy,
 ]
