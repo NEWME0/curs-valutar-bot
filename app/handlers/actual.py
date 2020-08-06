@@ -1,9 +1,7 @@
 from datetime import date
-from contextlib import suppress
 
 from telegram import (
     Update,
-    ChatAction,
     ReplyKeyboardRemove,
 )
 
@@ -16,6 +14,7 @@ from telegram.ext import (
 )
 
 from app.common.replies import (
+    reply_typing,
     reply_internal_error,
     reply_select_bank,
     reply_unknown_bank,
@@ -23,12 +22,10 @@ from app.common.replies import (
     reply_cancel_text,
 )
 
-from app.common.markups import (
-    markup_select_bank,
-)
+from app.common.markups import markup_columns
 
 import app.services.curs_valutar_api as api
-from app.services.render_table import render_rates_actual
+from app.services.render_table import render_table_actual
 
 
 BANK = 0
@@ -36,27 +33,27 @@ END = ConversationHandler.END
 
 
 def cb_actual(update: Update, context: CallbackContext):
+    reply_typing(update, context)
+
     banks = api.request_banks_all()
     if not banks:
         reply_internal_error(update, context, ReplyKeyboardRemove())
         return END
 
-    context.user_data['banks'] = banks
-
-    markup = markup_select_bank(banks)
+    markup = markup_columns([bank.registered_name for bank in banks], columns=1)
     reply_select_bank(update, context, markup)
     reply_cancel_info(update, context)
+
+    context.user_data['banks'] = banks
 
     return BANK
 
 
 def cb_bank(update: Update, context: CallbackContext):
-    context.bot.send_chat_action(update.message.chat.id, ChatAction.TYPING)
+    reply_typing(update, context)
 
-    with suppress(StopIteration):
-        selected_bank = next(bank for bank in context.user_data['banks'] if bank.registered_name == update.message.text)
-
-    if 'selected_bank' not in locals():
+    selected_bank = next((b for b in context.user_data['banks'] if b.registered_name == update.message.text), None)
+    if not selected_bank:
         reply_unknown_bank(update, context)
         reply_cancel_info(update, context)
         return BANK
@@ -79,21 +76,20 @@ def cb_bank(update: Update, context: CallbackContext):
     # Transpose table
     data = list(map(list, zip(*data)))
 
-    png_path = render_rates_actual(
+    table_path = render_table_actual(
         cells=data,
         bank_name=selected_bank.registered_name,
         actual_date=date.today(),
     )
 
-    update.message.reply_photo(
-        photo=open(png_path, 'rb'),
-    )
+    update.message.reply_photo(photo=open(table_path, 'rb'))
     reply_cancel_info(update, context)
 
     return BANK
 
 
 def cb_cancel(update: Update, context: CallbackContext):
+    reply_typing(update, context)
     reply_cancel_text(update, context, ReplyKeyboardRemove())
     return ConversationHandler.END
 

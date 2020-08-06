@@ -1,48 +1,27 @@
-from typing import List
+from typing import List, Iterable
 
 from telegram import (
     KeyboardButton,
     ReplyKeyboardMarkup,
-)
-
-from app.common.models import (
-    BankItem,
-    CoinItem,
+    ReplyKeyboardRemove,
 )
 
 
-def markup_select_bank(bank_list: List[BankItem]) -> ReplyKeyboardMarkup:
-    column = list()
-    for item in bank_list:
-        button = KeyboardButton(text=item.registered_name)
-        column.append([button])
-    markup = ReplyKeyboardMarkup(column)
-    return markup
+def group_by(it: Iterable, by: int = 1):
+    """ group_by(it=[1, 2, 3, 4, 5, 6], by=2) -> [[1, 2], [3, 4], [5, 6]] """
+    result = list()
+    for i in range(0, len(it), by):
+        result.append(it[i:i+by])
+    return result
 
 
-def markup_select_coin(coin_list: List[CoinItem]) -> ReplyKeyboardMarkup:
-    count_per_row = 5
-    keyboard = list()
-    for i in range(0, len(coin_list), count_per_row):
-        row = list()
-        for coin in coin_list[i:i+count_per_row]:
-            row.append(
-                KeyboardButton(text=coin.abbr)
-            )
-        keyboard.append(row)
+def markup_columns(keys: List[str], columns: int = 2) -> ReplyKeyboardMarkup:
+    """ Make keyboard markup with specified number of columns """
+    buttons = [KeyboardButton(text=key) for key in keys]
+    keyboard = group_by(buttons, columns)
     markup = ReplyKeyboardMarkup(keyboard)
     return markup
 
 
-def markup_coins(coins: List[str]) -> ReplyKeyboardMarkup:
-    count_per_row = 5
-    keyboard = list()
-    for i in range(0, len(coins), count_per_row):
-        row = list()
-        for coin in coins[i:i+count_per_row]:
-            row.append(
-                KeyboardButton(text=coin)
-            )
-        keyboard.append(row)
-    markup = ReplyKeyboardMarkup(keyboard)
-    return markup
+def markup_remove():
+    return ReplyKeyboardRemove()

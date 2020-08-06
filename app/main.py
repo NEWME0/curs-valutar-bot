@@ -14,7 +14,7 @@ from app.handlers import (
     debug,
     evolution,
     actual,
-    best,
+    options,
     default,
     feature,
     unknown,
@@ -39,7 +39,7 @@ for handler in itertools.chain(
     default.handlers,
     evolution.handlers,
     actual.handlers,
-    best.handlers,
+    options.handlers,
     unknown.handlers,
 ):
     updater.dispatcher.add_handler(handler)

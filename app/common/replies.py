@@ -1,11 +1,13 @@
+from telegram import ChatAction
+from telegram import Message
 
 
 def reply_start(update, context, markup=None):
     update.message.reply_text(
-        "Curl Valutar Bot - https://www.live.curs-valutar.xyz/"
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry \n"
-        "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,\n"
-        "when an unknown printer took a galley of type and scrambled it to make\n",
+        "Salutare.\n"  # noqa
+        "Ma numesc CursValutarBot - https://www.live.curs-valutar.xyz/\n"  # noqa
+        "Pot sa-ti arat informatii referitoare la ratele de schimb valutart\n"  # noqa
+        "Ce vrei sa stii?\n",  # noqa
         reply_markup=markup,
     )
 
@@ -16,10 +18,16 @@ def reply_help(update, context, markup=None):
         '/start - initierea dialogului\n'  # noqa
         '/help - lista de commenzi disponibile\n'  # noqa
         '/evolution - evolutia valutei pentru ultimile 7 zile\n'  # noqa
-        '/actual - ratele de schimb actuale\n'  # noqa
-        '/best_sell - cea mai buna optiune de vinzare\n'  # noqa
-        '/best_buy - cea mai buna optiune de cumparare\n',  # noqa
+        '/options - optiunile de schimb a valutei\n'  # noqa
+        '/actual - ratele de schimb actuale\n',  # noqa
         reply_markup=markup,
+    )
+
+
+def reply_typing(update, context, markup=None):
+    context.bot.send_chat_action(
+        chat_id=update.message.from_user.id,
+        action=ChatAction.TYPING,
     )
 
 
